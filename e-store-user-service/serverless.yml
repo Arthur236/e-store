@@ -1,0 +1,66 @@
+service: e-store-user-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+
+functions:
+  register:
+    handler: app/handler.register
+    events:
+      - httpApi:
+          path: /register
+          method: post
+  login:
+    handler: app/handler.login
+    events:
+      - httpApi:
+          path: /login
+          method: post
+  verify:
+    handler: app/handler.verify
+    events:
+      - httpApi:
+          path: /verify
+          method: post
+  profile:
+    handler: app/handler.profile
+    events:
+      - httpApi:
+          path: /user
+          method: post
+      - httpApi:
+          path: /user
+          method: put
+      - httpApi:
+          path: /user
+          method: get
+  cart:
+    handler: app/handler.cart
+    events:
+      - httpApi:
+          path: /cart
+          method: post
+      - httpApi:
+          path: /cart
+          method: put
+      - httpApi:
+          path: /cart
+          method: get
+  payment:
+    handler: app/handler.payment
+    events:
+      - httpApi:
+          path: /payment
+          method: post
+      - httpApi:
+          path: /payment
+          method: put
+      - httpApi:
+          path: /payment
+          method: get
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
