@@ -17,7 +17,15 @@ export const login = middy((event: APIGatewayProxyEventV2) => {
 }).use(jsonBodyParser());
 
 export const verify = (event: APIGatewayProxyEventV2) => {
-  return userService.VerifyUser(event);
+  const httpMethod = event.requestContext.http.method.toLowerCase();
+
+  if (httpMethod === 'post') {
+    return userService.VerifyUser(event);
+  } else if (httpMethod === 'get') {
+    return userService.GetVerificationToken(event);
+  } else {
+    return ErrorResponse(404, 'requested method is not supported!');
+  }
 };
 
 export const profile = (event: APIGatewayProxyEventV2) => {
@@ -47,6 +55,7 @@ export const cart = (event: APIGatewayProxyEventV2) => {
     return ErrorResponse(404, 'requested method is not supported!');
   }
 };
+
 export const payment = (event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase();
 

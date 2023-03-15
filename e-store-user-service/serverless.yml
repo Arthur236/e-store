@@ -1,5 +1,6 @@
 service: e-store-user-service
 frameworkVersion: '3'
+useDotenv: true
 
 provider:
   name: aws
@@ -9,6 +10,14 @@ provider:
   region: "us-east-2"
   httpApi:
     cors: true
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_USER: ${env:DB_USER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_NAME: ${env:DB_NAME}
+    DB_PORT: ${env:DB_PORT}
+    MAILGUN_API_KEY: ${env:MAILGUN_API_KEY}
+    MAILGUN_DOMAIN: ${env:MAILGUN_DOMAIN}
 
 functions:
   register:
@@ -26,6 +35,9 @@ functions:
   verify:
     handler: app/handler.verify
     events:
+      - httpApi:
+          path: /verify
+          method: get
       - httpApi:
           path: /verify
           method: post
