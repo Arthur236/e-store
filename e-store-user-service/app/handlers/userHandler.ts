@@ -4,7 +4,6 @@ import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { container } from 'tsyringe';
 
 import { UserService } from '../service/userService';
-import { ErrorResponse } from '../utility/response';
 
 const userService = container.resolve(UserService);
 
@@ -16,7 +15,7 @@ export const login = middy((event: APIGatewayProxyEventV2) => {
   return userService.UserLogin(event);
 }).use(jsonBodyParser());
 
-export const verify = (event: APIGatewayProxyEventV2) => {
+export const verify = middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase();
 
   if (httpMethod === 'post') {
@@ -24,11 +23,11 @@ export const verify = (event: APIGatewayProxyEventV2) => {
   } else if (httpMethod === 'get') {
     return userService.GetVerificationToken(event);
   } else {
-    return ErrorResponse(404, 'requested method is not supported!');
+    return userService.UnsupportedMethod(event);
   }
-};
+}).use(jsonBodyParser());
 
-export const profile = (event: APIGatewayProxyEventV2) => {
+export const profile = middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase();
 
   if (httpMethod === 'post') {
@@ -38,11 +37,11 @@ export const profile = (event: APIGatewayProxyEventV2) => {
   } else if (httpMethod === 'patch' || httpMethod === 'put') {
     return userService.UpdateProfile(event);
   } else {
-    return ErrorResponse(404, 'requested method is not supported!');
+    return userService.UnsupportedMethod(event);
   }
-};
+}).use(jsonBodyParser());
 
-export const cart = (event: APIGatewayProxyEventV2) => {
+export const cart = middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase();
 
   if (httpMethod === 'post') {
@@ -52,11 +51,11 @@ export const cart = (event: APIGatewayProxyEventV2) => {
   } else if (httpMethod === 'patch' || httpMethod === 'put') {
     return userService.UpdateCart(event);
   } else {
-    return ErrorResponse(404, 'requested method is not supported!');
+    return userService.UnsupportedMethod(event);
   }
-};
+}).use(jsonBodyParser());
 
-export const payment = (event: APIGatewayProxyEventV2) => {
+export const payment = middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase();
 
   if (httpMethod === 'post') {
@@ -66,6 +65,6 @@ export const payment = (event: APIGatewayProxyEventV2) => {
   } else if (httpMethod === 'patch' || httpMethod === 'put') {
     return userService.UpdatePayment(event);
   } else {
-    return ErrorResponse(404, 'requested method is not supported!');
+    return userService.UnsupportedMethod(event);
   }
-};
+}).use(jsonBodyParser());
